@@ -1,0 +1,36 @@
+---
+title: "DIIG Data Challenge - New Hire Visa Cases"
+author: "Sara Mehta"
+date: "Sunday, August 30, 2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+toc: yes
+theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Section 1
+### Data and packages
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(tidyverse)
+library(usethis)
+
+visa_cases <- read_csv("DIIG F20 Data Challenge #2")
+certified <- visacases %>% 
+  filter(CASESTATUS == "certified")
+```
+
+lm_full <- no %>% 
+arrange(days, hour) %>% 
+select(-days) %>% 
+lm(CASESTATUS ~ ., data = .)
+
+lm_step <- lm_full %>%
+step(direction = "backward", trace = 0)
+lm_step
+
