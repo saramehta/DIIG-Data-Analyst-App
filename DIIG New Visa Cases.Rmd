@@ -20,17 +20,31 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(usethis)
 
-visa_cases <- read_csv("DIIG F20 Data Challenge #2")
-certified <- visacases %>% 
-  filter(CASESTATUS == "certified")
+visa_cases <- read_csv("DIIG F20 Data Challenge #2.csv")
+
+certified <- visa_cases %>% 
+  filter(CASE_STATUS == "certified")
 ```
 
-lm_full <- no %>% 
-arrange(days, hour) %>% 
-select(-days) %>% 
-lm(CASESTATUS ~ ., data = .)
 
+```{r filling-missing-values-for-variable}
+certified <- certified %>%
+  mutate(EDUCATION_LEVEL_REQUIRED = if_else(is.na(EDUCATION_LEVEL_REQUIRED),"No",EDUCATION_LEVEL_REQUIRED)) %>%
+  mutate(COLLEGE_MAJOR_REQUIRED = if_else(is.na(COLLEGE_MAJOR_REQUIRED),"No",COLLEGE_MAJOR_REQUIRED)) %>%
+  mutate(EXPERIENCE_REQUIRED_Y_N = if_else(is.na(EXPERIENCE_REQUIRED_Y_N),"n",EXPERIENCE_REQUIRED_Y_N)) %>%
+  mutate(EXPERIENCE_REQUIRED_NUM_MONTHS = if_else(is.na(EXPERIENCE_REQUIRED_NUM_MONTHS),0,EXPERIENCE_REQUIRED_NUM_MONTHS)) %>%
+  mutate(COUNTRY_OF_CITIZENSHIP = if_else(is.na(COUNTRY_OF_CITIZENSHIP),"NOT GIVEN",COUNTRY_OF_CITIZENSHIP))
+```
+
+
+```{r creating full model}
+lm_full <- lm(CASE_STATUS ~ ., data = certified)
+
+tidy(lm_full)
+```
+
+``` {r}
 lm_step <- lm_full %>%
 step(direction = "backward", trace = 0)
 lm_step
-
+```
