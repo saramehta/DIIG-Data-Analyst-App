@@ -36,15 +36,38 @@ certified <- certified %>%
   mutate(COUNTRY_OF_CITIZENSHIP = if_else(is.na(COUNTRY_OF_CITIZENSHIP),"NOT GIVEN",COUNTRY_OF_CITIZENSHIP))
 ```
 
+```{r remove NAs}
+new_certified <- na.omit(certified)
+```
+
 
 ```{r creating full model}
-lm_full <- lm(CASE_STATUS ~ ., data = certified)
+lm_full <- lm(CASE_STATUS ~ EMPLOYER_NAME + EDUCATION_LEVEL_REQUIRED + COLLEGE_MAJOR_REQUIRED + EXPERIENCE_REQUIRED_Y_N + EXPERIENCE_REQUIRED_NUM_MONTHS + COUNTRY_OF_CITIZENSHIP + WORK_STATE_ABBREVIATION + VISA_CLASS + PAID_WAGE_PER_YEAR + JOB_TITLE_SUBGROUP, data = new_certified)
 
 tidy(lm_full)
 ```
 
-``` {r}
+``` {r backward elimination}
 lm_step <- lm_full %>%
 step(direction = "backward", trace = 0)
 lm_step
 ```
+
+
+
+```{r 2-3-locations}
+library(usmap)
+library(ggplot2)
+
+new_certified_v2 <- new_certified %>%
+  rename(state = WORK_STATE)
+
+plot_usmap(data = new_certified_v2, values = "state", color = "red") + 
+  scale_fill_continuous(
+    low = "white", high = "red", name = "Population (2015)", label = scales::comma
+  ) + theme(legend.position = "right")
+```
+
+
+
+
